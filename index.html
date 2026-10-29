@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fruity - فاكهة طازجة</title>
+  <title>طازة - خضار وفاكهة لحد باب بيتك</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,9 +13,9 @@
     <!-- 1. شاشة البداية (Splash / Welcome) -->
     <section id="screen-splash" class="screen active splash-screen">
       <div class="splash-content">
-        <div class="brand-logo">🌿 Fruity</div>
-        <p class="brand-sub">فاكهة طازجة .. لحياة أفضل</p>
-        <div class="splash-art">🧺🍎🍊🍇</div>
+        <div class="brand-logo">🌿 طازة</div>
+        <p class="brand-sub">خضار وفاكهة طازة .. لحد باب بيتك</p>
+        <div class="splash-art">🧺🥬🍅🍊</div>
       </div>
       <div class="splash-actions">
         <button class="btn btn-primary" onclick="navigateTo('screen-home')">ابدأ الآن</button>
@@ -26,21 +26,21 @@
     <!-- 2. الصفحة الرئيسية -->
     <section id="screen-home" class="screen">
       <div class="top-bar">
-        <div class="brand-title">🌿 Fruity</div>
+        <div class="brand-title">🌿 طازة</div>
         <div class="location-badge">📍 القاهرة - مدينة نصر</div>
       </div>
 
       <div class="search-box">
-        <input type="text" id="homeSearchInput" placeholder="ابحث عن فاكهة أو صنف..." oninput="filterHomeProducts()">
+        <input type="text" id="homeSearchInput" placeholder="بتدور على خضار أو فاكهة إيه؟" oninput="filterHomeProducts()">
       </div>
 
       <div class="promo-banner">
         <div>
-          <h3>طازجة كل يوم</h3>
-          <p>من أفضل المزارع لحد باب بيتك</p>
+          <h3>طازة كل يوم 🌱</h3>
+          <p>من المزرعة مباشرة لأعلى جودة</p>
           <button onclick="navigateTo('screen-categories')">تسوق الآن</button>
         </div>
-        <div class="banner-emoji">🍊🍓</div>
+        <div class="banner-emoji">🥦🍎</div>
       </div>
 
       <div class="section-header">
@@ -48,14 +48,14 @@
         <a href="#" onclick="navigateTo('screen-categories')">عرض الكل</a>
       </div>
       <div class="quick-categories">
-        <div class="cat-pill" onclick="filterByCategory('موز')">🍌 موز</div>
-        <div class="cat-pill" onclick="filterByCategory('تفاح')">🍎 تفاح</div>
-        <div class="cat-pill" onclick="filterByCategory('برتقال')">🍊 برتقال</div>
-        <div class="cat-pill" onclick="filterByCategory('مانجو')">🥭 مانجو</div>
+        <div class="cat-pill" onclick="filterByCategory('الكل')">🌿 الكل</div>
+        <div class="cat-pill" onclick="filterByCategory('خضار')">🥦 خضار</div>
+        <div class="cat-pill" onclick="filterByCategory('فاكهة')">🍎 فاكهة</div>
+        <div class="cat-pill" onclick="filterByCategory('عروض')">🏷️ عروض اليوم</div>
       </div>
 
       <div class="section-header">
-        <h4>عروض اليوم 🔥</h4>
+        <h4>عروض ومنتجات طازة 🔥</h4>
       </div>
       <div class="products-grid" id="homeProductsGrid"></div>
     </section>
@@ -79,157 +79,5 @@
       <div class="details-image" id="detailsImg">🥭</div>
       <div class="details-card">
         <div class="details-title-row">
-          <h2 id="detailsName">مانجو عويس</h2>
-          <span class="price-tag"><b id="detailsPrice">45</b> ج.م / كجم</span>
-        </div>
-        <div class="rating-bar">⭐ 4.8 <small>(124 تقييم)</small></div>
-        <p class="details-desc" id="detailsDesc">
-          طازجة عالية الجودة، ذات طعم مميز وحلو طبيعي. يتم اختيارها بعناية من أفضل المزارع.
-        </p>
-        <div class="qty-counter-row">
-          <span>الكمية المطلوبة:</span>
-          <div class="counter">
-            <button onclick="changeDetailsQty(-1)">-</button>
-            <span id="detailsQty">1</span>
-            <button onclick="changeDetailsQty(1)">+</button>
-          </div>
-        </div>
-        <button class="btn btn-primary btn-block" onclick="addDetailsToCart()">أضف إلى السلة</button>
-      </div>
-    </section>
-
-    <!-- 5. سلة المشتريات -->
-    <section id="screen-cart" class="screen">
-      <div class="screen-header">
-        <button class="back-btn" onclick="navigateTo('screen-home')">‹</button>
-        <h3>سلة المشتريات</h3>
-        <button class="icon-btn" onclick="clearCart()">🗑️</button>
-      </div>
-      <div class="cart-items-wrapper" id="cartItemsList"></div>
-      <div class="cart-summary-footer">
-        <div class="total-row">
-          <span>الإجمالي:</span>
-          <span id="cartTotalPrice">0 ج.م</span>
-        </div>
-        <button class="btn btn-primary btn-block" onclick="navigateTo('screen-checkout')">إتمام الطلب</button>
-      </div>
-    </section>
-
-    <!-- 6. إتمام الطلب -->
-    <section id="screen-checkout" class="screen">
-      <div class="screen-header">
-        <button class="back-btn" onclick="navigateTo('screen-cart')">‹</button>
-        <h3>إتمام الطلب</h3>
-        <span></span>
-      </div>
-      <div class="checkout-form">
-        <h4>بيانات التوصيل</h4>
-        <input type="text" id="orderName" placeholder="الاسم الكامل">
-        <input type="tel" id="orderPhone" placeholder="رقم الهاتف">
-        <input type="text" id="orderAddress" placeholder="العنوان بالتفصيل (الشارع، العمارة)">
-        <textarea id="orderNotes" placeholder="ملاحظات إضافية (اختياري)"></textarea>
-
-        <h4>طريقة الدفع</h4>
-        <label class="payment-option">
-          <input type="radio" name="payment" checked> الدفع عند الاستلام (كاش)
-        </label>
-        <button class="btn btn-primary btn-block" onclick="confirmOrder()">تأكيد الطلب 💬</button>
-      </div>
-    </section>
-
-    <!-- 7. تأكيد الطلب بنجاح -->
-    <section id="screen-success" class="screen success-screen">
-      <div class="success-icon">✓</div>
-      <h2>تم الطلب بنجاح!</h2>
-      <p>شكراً لثقتك في Fruity، جاري تجهيز طلبك وسيتم التواصل معك فوراً.</p>
-      <button class="btn btn-primary" onclick="navigateTo('screen-tracking')">عرض تفاصيل وتتبع الطلب</button>
-      <button class="btn-text" onclick="navigateTo('screen-home')">العودة للرئيسية</button>
-    </section>
-
-    <!-- 8. متابعة الطلب -->
-    <section id="screen-tracking" class="screen">
-      <div class="screen-header">
-        <button class="back-btn" onclick="navigateTo('screen-home')">‹</button>
-        <h3>تفاصيل الطلب</h3>
-        <span></span>
-      </div>
-      <div class="tracking-container">
-        <div class="tracking-card">
-          <div class="track-id">طلب رقم <b id="trackingId">#84920</b></div>
-          <span class="badge badge-success">جاري التجهيز</span>
-        </div>
-        <div class="tracking-steps">
-          <div class="step done">
-            <div class="step-dot"></div>
-            <div class="step-text"><b>تم استلام الطلب</b><small>طلبك وصلنا بنجاح</small></div>
-          </div>
-          <div class="step active">
-            <div class="step-dot"></div>
-            <div class="step-text"><b>جاري التجهيز</b><small>يتم فرز وتجهيز الفاكهة الطازجة</small></div>
-          </div>
-          <div class="step">
-            <div class="step-dot"></div>
-            <div class="step-text"><b>خرج للتوصيل</b><small>المندوب في الطريق إليك</small></div>
-          </div>
-          <div class="step">
-            <div class="step-dot"></div>
-            <div class="step-text"><b>تم التسليم</b><small>بالهنا والشفا</small></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 9. حسابي الشخصي -->
-    <section id="screen-account" class="screen">
-      <div class="screen-header">
-        <h3>حسابي</h3>
-      </div>
-      <div class="profile-card">
-        <div class="avatar">👤</div>
-        <h4 id="profileNameDisplay">أهلاً بك في Fruity</h4>
-        <small>عميل طازة المميز</small>
-      </div>
-      <div class="menu-list">
-        <div class="menu-item" onclick="navigateTo('screen-tracking')">📦 طلباتي <span>‹</span></div>
-        <div class="menu-item" onclick="navigateTo('screen-favorites')">❤️ المفضلة <span>‹</span></div>
-        <div class="menu-item" onclick="alert('خدمة العملاء: 01000000000')">📞 الدعم والمساعدة <span>‹</span></div>
-        <div class="menu-item" onclick="navigateTo('screen-splash')">🚪 تسجيل الخروج <span>‹</span></div>
-      </div>
-    </section>
-
-    <!-- 10. المفضلة -->
-    <section id="screen-favorites" class="screen">
-      <div class="screen-header">
-        <button class="back-btn" onclick="navigateTo('screen-home')">‹</button>
-        <h3>المفضلة ❤️</h3>
-        <span></span>
-      </div>
-      <div class="products-grid" id="favProductsGrid"></div>
-    </section>
-
-    <!-- شريط التنقل السفلي الثابت -->
-    <nav class="bottom-nav" id="mainNavbar">
-      <button class="nav-item active" onclick="navTab('screen-home', this)">
-        <span>🏠</span>الرئيسية
-      </button>
-      <button class="nav-item" onclick="navTab('screen-categories', this)">
-        <span>▦</span>الأقسام
-      </button>
-      <button class="nav-item cart-nav" onclick="navTab('screen-cart', this)">
-        <span>🛒</span>السلة
-        <b id="navCartCount" class="nav-badge">0</b>
-      </button>
-      <button class="nav-item" onclick="navTab('screen-tracking', this)">
-        <span>📦</span>الطلبات
-      </button>
-      <button class="nav-item" onclick="navTab('screen-account', this)">
-        <span>👤</span>المزيد
-      </button>
-    </nav>
-
-  </div>
-
-  <script src="script.js"></script>
-</body>
-  </html>
+          <h2 id="details
             
