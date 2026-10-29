@@ -1,211 +1,255 @@
-// غير الرقم ده برقم واتسابك بكود مصر 20
-const MY_WHATSAPP_NUMBER = "201000000000";
+// استبدل برقم هاتفك لواتساب
+const WHATSAPP_NUMBER = "201000000000";
 
+// قاعدة بيانات المنتجات
 const products = [
-  {id:1, name:"مانجو", emoji:"🥭", price:55, unit:"كيلو", category:"فاكهة"},
-  {id:2, name:"فراولة", emoji:"🍓", price:40, unit:"علبة", category:"فاكهة"},
-  {id:3, name:"موز", emoji:"🍌", price:25, unit:"كيلو", category:"فاكهة"},
-  {id:4, name:"برتقال", emoji:"🍊", price:22, unit:"كيلو", category:"فاكهة"},
-  {id:5, name:"تفاح", emoji:"🍎", price:45, unit:"كيلو", category:"فاكهة"},
-  {id:6, name:"عنب", emoji:"🍇", price:35, unit:"كيلو", category:"فاكهة"},
-  {id:7, name:"طماطم", emoji:"🍅", price:15, unit:"كيلو", category:"خضار"},
-  {id:8, name:"خيار", emoji:"🥒", price:18, unit:"كيلو", category:"خضار"},
-  {id:9, name:"بطاطس", emoji:"🥔", price:20, unit:"كيلو", category:"خضار"},
-  {id:10, name:"بصل", emoji:"🧅", price:16, unit:"كيلو", category:"خضار"},
-  {id:11, name:"جزر", emoji:"🥕", price:18, unit:"كيلو", category:"خضار"},
-  {id:12, name:"خس", emoji:"🥬", price:12, unit:"واحدة", category:"خضار"}
+  { id: 1, name: "مانجو عويس", emoji: "🥭", price: 45, category: "مانجو", discount: "20% خصم", desc: "مانجو طازجة عالية الجودة، ذات طعم سكري مميز ولذيذ." },
+  { id: 2, name: "فراولة بلدي", emoji: "🍓", price: 25, category: "فراولة", discount: "15% خصم", desc: "فراولة حمراء طازجة ونظيفة مناسبة للعصائر والتناول المباشر." },
+  { id: 3, name: "موز بلدي", emoji: "🍌", price: 20, category: "موز", discount: null, desc: "موز مستوي طازج غني بالبوتاسيوم والطاقة." },
+  { id: 4, name: "برتقال أبو سرة", emoji: "🍊", price: 22, category: "برتقال", discount: null, desc: "برتقال طازج كثير العصير ومليء بفيتامين C." },
+  { id: 5, name: "تفاح أحمر", emoji: "🍎", price: 40, category: "تفاح", discount: null, desc: "تفاح مقرمش وحلو المذاق منتقى بعناية." },
+  { id: 6, name: "عنب بناتي", emoji: "🍇", price: 35, category: "عنب", discount: null, desc: "عنب بدون بذر سكري وطازج من المزرعة." }
 ];
 
-let cart = JSON.parse(localStorage.getItem("tazaCart")) || {};
-let favorites = JSON.parse(localStorage.getItem("tazaFavorites")) || [];
-let currentFilter = "الكل";
+let cart = JSON.parse(localStorage.getItem("fruity_cart")) || {};
+let favorites = JSON.parse(localStorage.getItem("fruity_favs")) || [];
+let currentProductDetail = products[0];
+let detailCount = 1;
+let historyStack = ["screen-splash"];
 
-function startShopping() {
-  document.getElementById("welcomeScreen").style.display = "none";
-}
-
-function showProducts() {
-  const searchEl = document.getElementById("searchInput");
-  const query = searchEl ? searchEl.value.trim() : "";
-
-  const filtered = products.filter(p =>
-    (currentFilter === "الكل" || p.category === currentFilter) &&
-    p.name.includes(query)
-  );
-
-  document.getElementById("productsGrid").innerHTML = filtered.map(p => `
-    <article class="product">
-      <div class="product-img">${p.emoji}</div>
-      <h3>${p.name}</h3>
-      <small>طازة • ${p.unit}</small>
-      <div class="price">${p.price} جنيه</div>
-      <button class="add-btn" onclick="addToCart(${p.id})">＋ أضف للسلة</button>
-      <button class="close-cart" style="width:100%;margin-top:7px" onclick="toggleFavorite(${p.id})">
-        ${favorites.includes(p.id) ? "❤️ في المفضلة" : "♡ أضف للمفضلة"}
-      </button>
-    </article>
-  `).join("") || '<p class="empty-message">مفيش منتجات مطابقة للبحث.</p>';
-}
-
-function filterProducts(category) {
-  if (category === "عروض") {
-    alert("هنضيف العروض والخصومات قريباً!");
-    return;
+// نظام التنقل بين الشاشات
+function navigateTo(screenId) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  const target = document.getElementById(screenId);
+  if (target) {
+    target.classList.add("active");
+    target.scrollTop = 0;
   }
-  currentFilter = category;
-  document.getElementById("productsTitle").textContent = category === "الكل" ? "منتجات طازة" : category;
-  showProducts();
-  scrollToProducts();
+
+  // إخفاء الـ Bottom Nav في شاشة الترحيب وتأكيد الطلب
+  const nav = document.getElementById("mainNavbar");
+  if (screenId === "screen-splash" || screenId === "screen-success") {
+    nav.style.display = "none";
+  } else {
+    nav.style.display = "flex";
+  }
+
+  historyStack.push(screenId);
 }
 
-function addToCart(id) {
-  cart[id] = (cart[id] || 0) + 1;
-  updateCart();
+function goBack() {
+  if (historyStack.length > 1) {
+    historyStack.pop();
+    const prev = historyStack[historyStack.length - 1];
+    navigateTo(prev);
+  } else {
+    navigateTo("screen-home");
+  }
 }
 
-function updateCart() {
-  localStorage.setItem("tazaCart", JSON.stringify(cart));
-  const count = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
-  document.getElementById("cartCount").textContent = count;
-
-  const rows = Object.entries(cart);
-  document.getElementById("cartItems").innerHTML = rows.length
-    ? rows.map(([id, qty]) => {
-        const p = products.find(item => item.id === Number(id));
-        return `
-          <div class="cart-row">
-            <span>${p.emoji} ${p.name}<br>${p.price} جنيه</span>
-            <div class="cart-actions">
-              <button onclick="changeQty(${id},-1)">−</button>
-              <span>${qty}</span>
-              <button onclick="changeQty(${id},1)">＋</button>
-            </div>
-          </div>`;
-      }).join("")
-    : '<p class="empty-message">السلة لسه فاضية.</p>';
-
-  const total = rows.reduce((sum, [id, qty]) => {
-    return sum + (products.find(p => p.id === Number(id)).price * qty);
-  }, 0);
-
-  document.getElementById("cartTotal").textContent = total + " جنيه";
+function navTab(screenId, btn) {
+  document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
+  if (btn) btn.classList.add("active");
+  navigateTo(screenId);
 }
 
-function changeQty(id, change) {
-  cart[id] = (cart[id] || 0) + change;
-  if (cart[id] <= 0) delete cart[id];
-  updateCart();
+// عرض المنتجات في الصفحة الرئيسية
+function renderHomeProducts(list = products) {
+  const container = document.getElementById("homeProductsGrid");
+  container.innerHTML = list.map(p => `
+    <div class="prod-card" onclick="openDetails(${p.id})">
+      ${p.discount ? `<span class="badge-discount">${p.discount}</span>` : ""}
+      <div class="prod-thumb">${p.emoji}</div>
+      <h5>${p.name}</h5>
+      <small>طازة • 1 كجم</small>
+      <div class="prod-footer">
+        <span class="price">${p.price} ج.م</span>
+        <button class="prod-add-btn" onclick="event.stopPropagation(); addToCart(${p.id})">+</button>
+      </div>
+    </div>
+  `).join("");
 }
 
-function openCart() {
-  updateCart();
-  document.getElementById("cartPanel").style.display = "flex";
+function filterHomeProducts() {
+  const q = document.getElementById("homeSearchInput").value.trim().toLowerCase();
+  const res = products.filter(p => p.name.includes(q) || p.category.includes(q));
+  renderHomeProducts(res);
 }
 
-function closeCart() {
-  document.getElementById("cartPanel").style.display = "none";
+function filterByCategory(cat) {
+  const res = products.filter(p => p.category === cat);
+  renderHomeProducts(res);
 }
 
-function scrollToProducts() {
-  document.getElementById("productsSection").scrollIntoView({ behavior: "smooth" });
+// شاشة الأقسام
+function renderCategoriesList() {
+  const container = document.getElementById("categoriesListContainer");
+  const cats = [...new Set(products.map(p => p.category))];
+  container.innerHTML = cats.map(c => `
+    <div class="cat-item-row" onclick="filterByCategory('${c}'); navigateTo('screen-home')">
+      <div><b>${c}</b><br><small>أصناف طازجة ومختارة</small></div>
+      <span>‹</span>
+    </div>
+  `).join("");
 }
 
-function goHome(button) {
-  setActiveNav(button);
-  currentFilter = "الكل";
-  document.getElementById("productsTitle").textContent = "منتجات طازة";
-  showProducts();
-  window.scrollTo({top: 0, behavior: "smooth"});
+// تفاصيل المنتج
+function openDetails(id) {
+  const p = products.find(x => x.id === id);
+  currentProductDetail = p;
+  detailCount = 1;
+  document.getElementById("detailsName").innerText = p.name;
+  document.getElementById("detailsPrice").innerText = p.price;
+  document.getElementById("detailsDesc").innerText = p.desc;
+  document.getElementById("detailsImg").innerText = p.emoji;
+  document.getElementById("detailsQty").innerText = detailCount;
+  navigateTo("screen-details");
 }
 
-function showCategories(button) {
-  setActiveNav(button);
-  document.querySelector(".categories").scrollIntoView({ behavior: "smooth" });
+function changeDetailsQty(delta) {
+  detailCount += delta;
+  if (detailCount < 1) detailCount = 1;
+  document.getElementById("detailsQty").innerText = detailCount;
 }
 
-function toggleFavorite(id) {
+function addDetailsToCart() {
+  cart[currentProductDetail.id] = (cart[currentProductDetail.id] || 0) + detailCount;
+  updateCartUI();
+  navigateTo("screen-cart");
+}
+
+function toggleDetailsFav() {
+  const id = currentProductDetail.id;
   if (favorites.includes(id)) {
-    favorites = favorites.filter(item => item !== id);
+    favorites = favorites.filter(x => x !== id);
+    alert("تمت الإزالة من المفضلة");
   } else {
     favorites.push(id);
+    alert("تمت الإضافة للمفضلة ❤️");
   }
-  localStorage.setItem("tazaFavorites", JSON.stringify(favorites));
-  if (currentFilter === "المفضلة") showFavorites();
-  else showProducts();
+  localStorage.setItem("fruity_favs", JSON.stringify(favorites));
+  renderFavorites();
 }
 
-function showFavorites(button) {
-  if (button) setActiveNav(button);
-  currentFilter = "المفضلة";
-  document.getElementById("productsTitle").textContent = "المفضلة";
-
-  const favList = products.filter(p => favorites.includes(p.id));
-  document.getElementById("productsGrid").innerHTML = favList.map(p => `
-    <article class="product">
-      <div class="product-img">${p.emoji}</div>
-      <h3>${p.name}</h3>
-      <small>طازة • ${p.unit}</small>
-      <div class="price">${p.price} جنيه</div>
-      <button class="add-btn" onclick="addToCart(${p.id})">＋ أضف للسلة</button>
-      <button class="close-cart" style="width:100%;margin-top:7px" onclick="toggleFavorite(${p.id})">إزالة من المفضلة</button>
-    </article>
-  `).join("") || '<p class="empty-message">لسه مفيش منتجات في المفضلة.</p>';
-
-  scrollToProducts();
+// السلة
+function addToCart(id) {
+  cart[id] = (cart[id] || 0) + 1;
+  updateCartUI();
 }
 
-function showAccount(button) {
-  setActiveNav(button);
-  alert("صفحة الحساب قيد التطوير!");
+function changeCartQty(id, delta) {
+  cart[id] = (cart[id] || 0) + delta;
+  if (cart[id] <= 0) delete cart[id];
+  updateCartUI();
 }
 
-function setActiveNav(button) {
-  document.querySelectorAll(".nav-item").forEach(item => item.classList.remove("active"));
-  if (button) button.classList.add("active");
+function clearCart() {
+  cart = {};
+  updateCartUI();
 }
 
-function checkout() {
-  if (Object.keys(cart).length === 0) {
-    alert("السلة فاضية!");
+function updateCartUI() {
+  localStorage.setItem("fruity_cart", JSON.stringify(cart));
+  const entries = Object.entries(cart);
+  const totalCount = entries.reduce((s, [, q]) => s + q, 0);
+  document.getElementById("navCartCount").innerText = totalCount;
+
+  const container = document.getElementById("cartItemsList");
+  if (entries.length === 0) {
+    container.innerHTML = `<p style="text-align:center;padding:40px;color:#999;">السلة فارغة حالياً 🧺</p>`;
+    document.getElementById("cartTotalPrice").innerText = "0 ج.م";
     return;
   }
-  closeCart();
-  document.getElementById("checkoutPanel").style.display = "flex";
+
+  let total = 0;
+  container.innerHTML = entries.map(([id, qty]) => {
+    const p = products.find(x => x.id === Number(id));
+    const sub = p.price * qty;
+    total += sub;
+    return `
+      <div class="cart-row-item">
+        <span style="font-size:24px;">${p.emoji}</span>
+        <div style="flex:1; margin-right:12px;">
+          <b>${p.name}</b><br>
+          <small>${p.price} ج.م / كجم</small>
+        </div>
+        <div class="counter">
+          <button onclick="changeCartQty(${id}, -1)">-</button>
+          <span>${qty}</span>
+          <button onclick="changeCartQty(${id}, 1)">+</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  document.getElementById("cartTotalPrice").innerText = total + " ج.م";
 }
 
-function closeCheckout() {
-  document.getElementById("checkoutPanel").style.display = "none";
+// المفضلة
+function renderFavorites() {
+  const container = document.getElementById("favProductsGrid");
+  const favList = products.filter(p => favorites.includes(p.id));
+  if (favList.length === 0) {
+    container.innerHTML = `<p style="grid-column: span 2;text-align:center;padding:40px;color:#999;">لا توجد عناصر في المفضلة</p>`;
+    return;
+  }
+  container.innerHTML = favList.map(p => `
+    <div class="prod-card" onclick="openDetails(${p.id})">
+      <div class="prod-thumb">${p.emoji}</div>
+      <h5>${p.name}</h5>
+      <div class="prod-footer">
+        <span class="price">${p.price} ج.م</span>
+        <button class="prod-add-btn" onclick="event.stopPropagation(); addToCart(${p.id})">+</button>
+      </div>
+    </div>
+  `).join("");
 }
 
-function sendOrderToWhatsApp() {
-  const name = document.getElementById("custName").value.trim();
-  const phone = document.getElementById("custPhone").value.trim();
-  const address = document.getElementById("custAddress").value.trim();
+// تأكيد الطلب
+function confirmOrder() {
+  const name = document.getElementById("orderName").value.trim();
+  const phone = document.getElementById("orderPhone").value.trim();
+  const address = document.getElementById("orderAddress").value.trim();
+  const notes = document.getElementById("orderNotes").value.trim();
 
   if (!name || !phone || !address) {
-    alert("برجاء إدخال كافة البيانات المطلوبة.");
+    alert("يرجى ملء الاسم والهاتف والعنوان!");
     return;
   }
 
-  const rows = Object.entries(cart);
-  let itemsText = "";
-  let total = 0;
+  const entries = Object.entries(cart);
+  if (entries.length === 0) {
+    alert("السلة فارغة!");
+    return;
+  }
 
-  rows.forEach(([id, qty], index) => {
-    const p = products.find(item => item.id === Number(id));
-    const subtotal = p.price * qty;
-    total += subtotal;
-    itemsText += `${index + 1}. ${p.emoji} ${p.name} × ${qty} ${p.unit} = ${subtotal} ج.م\n`;
+  let total = 0;
+  let summary = "";
+  entries.forEach(([id, qty]) => {
+    const p = products.find(x => x.id === Number(id));
+    total += p.price * qty;
+    summary += `- ${p.name} × ${qty} كجم (${p.price * qty} ج.م)\n`;
   });
 
-  const msg = `🌿 *طلب جديد من طازة ماركت*\n--------------------------\n👤 *العميل:* ${name}\n📞 *الهاتف:* ${phone}\n📍 *العنوان:* ${address}\n--------------------------\n🛒 *المنتجات:*\n${itemsText}--------------------------\n💰 *الإجمالي:* ${total} جنيه مصري`;
+  const msg = `🌿 *طلب جديد من تطبيق Fruity*\n\n` +
+    `👤 *الاسم:* ${name}\n` +
+    `📞 *الهاتف:* ${phone}\n` +
+    `📍 *العنوان:* ${address}\n` +
+    (notes ? `📝 *ملاحظات:* ${notes}\n` : "") +
+    `\n🛒 *الطلب:*\n${summary}\n` +
+    `💰 *الإجمالي:* ${total} ج.م\n` +
+    `💵 *طريقة الدفع:* كاش عند الاستلام`;
 
-  window.open(`https://wa.me/${MY_WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
+
   cart = {};
-  updateCart();
-  closeCheckout();
+  updateCartUI();
+  navigateTo("screen-success");
 }
 
-showProducts();
-updateCart();
-   
+// التهيئة عند التشغيل
+renderHomeProducts();
+renderCategoriesList();
+renderFavorites();
+updateCartUI();
+                    
