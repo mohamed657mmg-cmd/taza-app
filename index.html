@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>طازة ماركت</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- شاشة الترحيب -->
+  <div class="welcome-screen" id="welcomeScreen">
+    <div class="welcome-logo">🌿 طازة</div>
+    <div class="welcome-basket">🧺🥬🍅🍊</div>
+    <h1>طازة كل يوم…<br>خير الطبيعة لحد باب بيتك</h1>
+    <p>خضار وفاكهة طازة، مختارة بعناية<br>اطلب اللي بتحبه، وإحنا نوصلّه لحد عندك</p>
+    <button class="welcome-button" onclick="startShopping()">ابدأ التسوق الآن ←</button>
+  </div>
+
+  <!-- التطبيق الرئيسي -->
+  <div class="app">
+    <header>
+      <div class="logo"><span>🌿</span>طازة</div>
+      <button class="header-btn" onclick="openCart()">🛒 <b id="cartCount">0</b></button>
+    </header>
+
+    <div class="location">📍 التوصيل إلى: حدّد عنوانك</div>
+
+    <div class="search">
+      🔍
+      <input id="searchInput" type="search" placeholder="بتدور على إيه؟" oninput="showProducts()">
+    </div>
+
+    <section class="banner">
+      <h1>طازة كل يوم 🌱<br>من المزرعة لحد باب بيتك</h1>
+      <p>خضار وفاكهة مختارة بعناية</p>
+      <button onclick="scrollToProducts()">تسوّق الآن ←</button>
+      <div class="banner-fruit">🍊 🍓</div>
+    </section>
+
+    <div class="section-title">
+      <h2>الأقسام</h2>
+      <button onclick="filterProducts('الكل')">عرض الكل</button>
+    </div>
+
+    <div class="categories">
+      <button class="category" onclick="filterProducts('فاكهة')">
+        <span class="emoji">🍎</span>الفاكهة
+      </button>
+      <button class="category" onclick="filterProducts('خضار')">
+        <span class="emoji">🥦</span>الخضار
+      </button>
+      <button class="category" onclick="filterProducts('عروض')">
+        <span class="emoji">🏷️</span>العروض
+      </button>
+      <button class="category" onclick="showFavorites()">
+        <span class="emoji">❤️</span>المفضلة
+      </button>
+    </div>
+
+    <div class="section-title" id="productsSection">
+      <h2 id="productsTitle">منتجات طازة</h2>
+      <button onclick="filterProducts('الكل')">كل المنتجات</button>
+    </div>
+
+    <div class="products" id="productsGrid"></div>
+  </div>
+
+  <!-- شريط التنقل السفلي -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="goHome(this)"><span>⌂</span>الرئيسية</button>
+    <button class="nav-item" onclick="showCategories(this)"><span>▦</span>الأقسام</button>
+    <button class="nav-item" onclick="openCart()"><span>🛒</span>السلة</button>
+    <button class="nav-item" onclick="showFavorites(this)"><span>♡</span>المفضلة</button>
+    <button class="nav-item" onclick="showAccount(this)"><span>♙</span>حسابي</button>
+  </nav>
+
+  <!-- نافذة السلة -->
+  <div class="cart-panel" id="cartPanel" onclick="if(event.target===this)closeCart()">
+    <div class="cart-box">
+      <h2>🛒 سلة طازة</h2>
+      <div id="cartItems"></div>
+      <div class="cart-total">
+        <span>الإجمالي</span>
+        <span id="cartTotal">0 جنيه</span>
+      </div>
+      <button class="add-btn" onclick="checkout()">إتمام الطلب</button>
+      <br><br>
+      <button class="close-cart" onclick="closeCart()">إغلاق</button>
+    </div>
+  </div>
+
+  <!-- نافذة إتمام الطلب والواتساب -->
+  <div class="cart-panel" id="checkoutPanel" onclick="if(event.target===this)closeCheckout()">
+    <div class="cart-box">
+      <h2>📋 بيانات التوصيل</h2>
+      <div class="form-inputs">
+        <input type="text" id="custName" placeholder="الاسم ثلاثي">
+        <input type="tel" id="custPhone" placeholder="رقم الموبايل للتواصل">
+        <textarea id="custAddress" rows="3" placeholder="العنوان بالتفصيل (المنطقة، الشارع، العمارة)"></textarea>
+      </div>
+      <button class="add-btn wa-btn" onclick="sendOrderToWhatsApp()">💬 تأكيد وإرسال عبر واتساب</button>
+      <br><br>
+      <button class="close-cart" onclick="closeCheckout()">رجوع للسلة</button>
+    </div>
+  </div>
+
+  <!-- ربط ملف الجافاسكريبت -->
+  <script src="script.js"></script>
+</body>
+  </html>
+      
