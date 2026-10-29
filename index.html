@@ -5,6 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>طازة - خضار وفاكهة لحد باب بيتك</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* تنسيق خاص بصورة اللوجو الجديدة */
+    .splash-logo-img {
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+      margin: 15px auto;
+      display: block;
+      border: 3px solid #ffffff40;
+    }
+    .top-logo-img {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      vertical-align: middle;
+      margin-left: 6px;
+    }
+  </style>
 </head>
 <body>
 
@@ -13,20 +34,27 @@
     <!-- 1. شاشة البداية -->
     <section id="screen-splash" class="screen active splash-screen">
       <div class="splash-content">
+        <!-- صورة اللوجو المرفوعة -->
+        <img src="logo.png" alt="طازة" class="splash-logo-img" onerror="this.src='https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=300'">
+        
         <div class="brand-logo">🌿 طازة</div>
         <p class="brand-sub">خضار وفاكهة طازة .. لحد باب بيتك</p>
-        <div class="splash-art">🧺🥬🍅🍊</div>
       </div>
+      
       <div class="splash-actions">
-        <button type="button" class="btn btn-primary" onclick="navigateTo('screen-home')">ابدأ الآن</button>
-        <button type="button" class="btn-text" onclick="navigateTo('screen-home')">تخطي</button>
+        <!-- تم تفعيل الزرار بالـ touch والـ click المباشر -->
+        <button type="button" class="btn btn-primary" id="startBtn" onclick="goToHome()">ابدأ الآن</button>
+        <button type="button" class="btn-text" onclick="goToHome()">تخطي ←</button>
       </div>
     </section>
 
     <!-- 2. الصفحة الرئيسية -->
     <section id="screen-home" class="screen">
       <div class="top-bar">
-        <div class="brand-title">🌿 طازة</div>
+        <div class="brand-title">
+          <img src="logo.png" alt="طازة" class="top-logo-img" onerror="this.style.display='none'">
+          طازة
+        </div>
         <div class="location-badge">📍 القاهرة - مدينة نصر</div>
       </div>
 
@@ -84,7 +112,7 @@
         </div>
         <div class="rating-bar">⭐ 4.9 <small>(أعلى جودة منتقاة)</small></div>
         <p class="details-desc" id="detailsDesc">
-          منتجات طازة يومياً منتقاة بعناية لضمان أفضل طعم وأعلى قيمة غذائية لك ولأسرتك.
+          منتجات طازة يومياً منتقاة بعناية لضمان أفضل طعم وأعلى قيمة غذائية.
         </p>
         <div class="qty-counter-row">
           <span>الكمية:</span>
@@ -126,7 +154,7 @@
         <h4>بيانات التوصيل</h4>
         <input type="text" id="orderName" placeholder="الاسم ثلاثي">
         <input type="tel" id="orderPhone" placeholder="رقم الهاتف للتواصل">
-        <input type="text" id="orderAddress" placeholder="العنوان بالتفصيل (الشارع، رقم العمارة، الشقة)">
+        <input type="text" id="orderAddress" placeholder="العنوان بالتفصيل (الشارع، رقم العمارة)">
         <textarea id="orderNotes" placeholder="أي ملاحظات للمندوب أو طلبات خاصة"></textarea>
 
         <h4>طريقة الدفع</h4>
@@ -141,7 +169,7 @@
     <section id="screen-success" class="screen success-screen">
       <div class="success-icon">✓</div>
       <h2>تم تأكيد طلبك بنجاح!</h2>
-      <p>شكراً لطلبك من <b>طازة 🌿</b>، جاري تجهيز المنتجات من المزرعة وهتكون عندك في أسرع وقت.</p>
+      <p>شكراً لطلبك من <b>طازة 🌿</b>، جاري تجهيز المنتجات من المزرعة.</p>
       <button type="button" class="btn btn-primary" onclick="navigateTo('screen-tracking')">متابعة حالة الطلب</button>
       <button type="button" class="btn-text" onclick="navigateTo('screen-home')">العودة للرئيسية</button>
     </section>
@@ -192,8 +220,7 @@
       <div class="menu-list">
         <div class="menu-item" onclick="navigateTo('screen-tracking')">📦 متابعة طلباتي <span>‹</span></div>
         <div class="menu-item" onclick="navigateTo('screen-favorites')">❤️ المفضلة <span>‹</span></div>
-        <div class="menu-item" onclick="alert('الدعم عبر واتساب جاهز في أي وقت!')">💬 خدمة العملاء والدعم <span>‹</span></div>
-        <div class="menu-item" onclick="navigateTo('screen-splash')">🚪 شاشة الترحيب <span>‹</span></div>
+        <div class="menu-item" onclick="alert('الدعم عبر واتساب جاهز!')">💬 خدمة العملاء والدعم <span>‹</span></div>
       </div>
     </section>
 
@@ -247,7 +274,15 @@
     let favorites = JSON.parse(localStorage.getItem("taza_favs")) || [];
     let currentProductDetail = products[0];
     let detailCount = 1;
-    let historyStack = ["screen-splash"];
+
+    // دالة الدخول المباشرة
+    function goToHome() {
+      document.getElementById("screen-splash").classList.remove("active");
+      document.getElementById("screen-home").classList.add("active");
+      document.getElementById("mainNavbar").style.display = "flex";
+      renderHomeProducts();
+      window.scrollTo(0, 0);
+    }
 
     function navigateTo(screenId) {
       document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
@@ -265,18 +300,10 @@
           nav.style.display = "flex";
         }
       }
-
-      historyStack.push(screenId);
     }
 
     function goBack() {
-      if (historyStack.length > 1) {
-        historyStack.pop();
-        const prev = historyStack[historyStack.length - 1];
-        navigateTo(prev);
-      } else {
-        navigateTo("screen-home");
-      }
+      navigateTo("screen-home");
     }
 
     function navTab(screenId, btn) {
@@ -408,5 +435,78 @@
       container.innerHTML = entries.map(([id, qty]) => {
         const p = products.find(x => x.id === Number(id));
         const sub = p.price * qty;
-        total += sub
-  
+        total += sub;
+        return `
+          <div class="cart-row-item">
+            <span style="font-size:24px;">${p.emoji}</span>
+            <div style="flex:1; margin-right:12px;">
+              <b>${p.name}</b><br>
+              <small>${p.price} ج.م / ${p.unit}</small>
+            </div>
+            <div class="counter">
+              <button type="button" onclick="changeCartQty(${id}, -1)">-</button>
+              <span>${qty}</span>
+              <button type="button" onclick="changeCartQty(${id}, 1)">+</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      document.getElementById("cartTotalPrice").innerText = total + " ج.م";
+    }
+
+    function renderFavorites() {
+      const container = document.getElementById("favProductsGrid");
+      if (!container) return;
+      const favList = products.filter(p => favorites.includes(p.id));
+      if (favList.length === 0) {
+        container.innerHTML = `<p style="grid-column: span 2;text-align:center;padding:40px;color:#999;">لسه مفيش منتجات في المفضلة</p>`;
+        return;
+      }
+      container.innerHTML = favList.map(p => `
+        <div class="prod-card" onclick="openDetails(${p.id})">
+          <div class="prod-thumb">${p.emoji}</div>
+          <h5>${p.name}</h5>
+          <div class="prod-footer">
+            <span class="price">${p.price} ج.م</span>
+            <button type="button" class="prod-add-btn" onclick="event.stopPropagation(); addToCart(${p.id})">+</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function confirmOrder() {
+      const name = document.getElementById("orderName").value.trim();
+      const phone = document.getElementById("orderPhone").value.trim();
+      const address = document.getElementById("orderAddress").value.trim();
+      const notes = document.getElementById("orderNotes").value.trim();
+
+      if (!name || !phone || !address) {
+        alert("من فضلك أدخل الاسم ورقم التليفون والعنوان بالتفصيل!");
+        return;
+      }
+
+      const entries = Object.entries(cart);
+      if (entries.length === 0) {
+        alert("السلة فاضية!");
+        return;
+      }
+
+      let total = 0;
+      let summary = "";
+      entries.forEach(([id, qty]) => {
+        const p = products.find(x => x.id === Number(id));
+        total += p.price * qty;
+        summary += `- ${p.name} × ${qty} ${p.unit} (${p.price * qty} ج.م)\n`;
+      });
+
+      const msg = `🌿 *طلب جديد من تطبيق طازة ماركت*\n\n` +
+        `👤 *الاسم:* ${name}\n` +
+        `📞 *رقم التليفون:* ${phone}\n` +
+        `📍 *العنوان:* ${address}\n` +
+        (notes ? `📝 *ملاحظات:* ${notes}\n` : "") +
+        `\n🛒 *المنتجات:*\n${summary}\n` +
+        `💰 *الإجمالي النهائي:* ${total} ج.م\n` +
+        `💵 *طريقة الدفع:* كاش عند الاستلام`;
+
+      window.open(`https://wa.me
