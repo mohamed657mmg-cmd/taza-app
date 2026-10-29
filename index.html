@@ -10,7 +10,7 @@
 
   <div class="mobile-frame">
 
-    <!-- 1. شاشة البداية (Splash / Welcome) -->
+    <!-- 1. شاشة البداية -->
     <section id="screen-splash" class="screen active splash-screen">
       <div class="splash-content">
         <div class="brand-logo">🌿 طازة</div>
@@ -18,8 +18,8 @@
         <div class="splash-art">🧺🥬🍅🍊</div>
       </div>
       <div class="splash-actions">
-        <button class="btn btn-primary" onclick="navigateTo('screen-home')">ابدأ الآن</button>
-        <button class="btn-text" onclick="navigateTo('screen-home')">تخطي</button>
+        <button type="button" class="btn btn-primary" onclick="navigateTo('screen-home')">ابدأ الآن</button>
+        <button type="button" class="btn-text" onclick="navigateTo('screen-home')">تخطي</button>
       </div>
     </section>
 
@@ -38,14 +38,14 @@
         <div>
           <h3>طازة كل يوم 🌱</h3>
           <p>من المزرعة مباشرة لأعلى جودة</p>
-          <button onclick="navigateTo('screen-categories')">تسوق الآن</button>
+          <button type="button" onclick="navigateTo('screen-categories')">تسوق الآن</button>
         </div>
         <div class="banner-emoji">🥦🍎</div>
       </div>
 
       <div class="section-header">
         <h4>الأقسام</h4>
-        <a href="#" onclick="navigateTo('screen-categories')">عرض الكل</a>
+        <a href="javascript:void(0)" onclick="navigateTo('screen-categories')">عرض الكل</a>
       </div>
       <div class="quick-categories">
         <div class="cat-pill" onclick="filterByCategory('الكل')">🌿 الكل</div>
@@ -63,7 +63,7 @@
     <!-- 3. قائمة الأقسام -->
     <section id="screen-categories" class="screen">
       <div class="screen-header">
-        <button class="back-btn" onclick="navigateTo('screen-home')">‹</button>
+        <button type="button" class="back-btn" onclick="navigateTo('screen-home')">‹</button>
         <h3>الأقسام</h3>
         <span></span>
       </div>
@@ -73,11 +73,340 @@
     <!-- 4. تفاصيل المنتج -->
     <section id="screen-details" class="screen">
       <div class="screen-header transparent-header">
-        <button class="back-btn" onclick="goBack()">‹</button>
-        <button class="icon-btn" onclick="toggleDetailsFav()">♡</button>
+        <button type="button" class="back-btn" onclick="goBack()">‹</button>
+        <button type="button" class="icon-btn" onclick="toggleDetailsFav()">♡</button>
       </div>
       <div class="details-image" id="detailsImg">🥭</div>
       <div class="details-card">
         <div class="details-title-row">
-          <h2 id="details
-            
+          <h2 id="detailsName">اسم المنتج</h2>
+          <span class="price-tag"><b id="detailsPrice">0</b> ج.م</span>
+        </div>
+        <div class="rating-bar">⭐ 4.9 <small>(أعلى جودة منتقاة)</small></div>
+        <p class="details-desc" id="detailsDesc">
+          منتجات طازة يومياً منتقاة بعناية لضمان أفضل طعم وأعلى قيمة غذائية لك ولأسرتك.
+        </p>
+        <div class="qty-counter-row">
+          <span>الكمية:</span>
+          <div class="counter">
+            <button type="button" onclick="changeDetailsQty(-1)">-</button>
+            <span id="detailsQty">1</span>
+            <button type="button" onclick="changeDetailsQty(1)">+</button>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-block" onclick="addDetailsToCart()">أضف إلى السلة</button>
+      </div>
+    </section>
+
+    <!-- 5. سلة المشتريات -->
+    <section id="screen-cart" class="screen">
+      <div class="screen-header">
+        <button type="button" class="back-btn" onclick="navigateTo('screen-home')">‹</button>
+        <h3>سلة طازة</h3>
+        <button type="button" class="icon-btn" onclick="clearCart()">🗑️</button>
+      </div>
+      <div class="cart-items-wrapper" id="cartItemsList"></div>
+      <div class="cart-summary-footer">
+        <div class="total-row">
+          <span>الإجمالي:</span>
+          <span id="cartTotalPrice">0 ج.م</span>
+        </div>
+        <button type="button" class="btn btn-primary btn-block" onclick="navigateTo('screen-checkout')">إتمام الطلب</button>
+      </div>
+    </section>
+
+    <!-- 6. إتمام الطلب -->
+    <section id="screen-checkout" class="screen">
+      <div class="screen-header">
+        <button type="button" class="back-btn" onclick="navigateTo('screen-cart')">‹</button>
+        <h3>إتمام الطلب</h3>
+        <span></span>
+      </div>
+      <div class="checkout-form">
+        <h4>بيانات التوصيل</h4>
+        <input type="text" id="orderName" placeholder="الاسم ثلاثي">
+        <input type="tel" id="orderPhone" placeholder="رقم الهاتف للتواصل">
+        <input type="text" id="orderAddress" placeholder="العنوان بالتفصيل (الشارع، رقم العمارة، الشقة)">
+        <textarea id="orderNotes" placeholder="أي ملاحظات للمندوب أو طلبات خاصة"></textarea>
+
+        <h4>طريقة الدفع</h4>
+        <label class="payment-option">
+          <input type="radio" name="payment" checked> الدفع عند الاستلام (كاش)
+        </label>
+        <button type="button" class="btn btn-primary btn-block" onclick="confirmOrder()">تأكيد وإرسال عبر واتساب 💬</button>
+      </div>
+    </section>
+
+    <!-- 7. تأكيد الطلب بنجاح -->
+    <section id="screen-success" class="screen success-screen">
+      <div class="success-icon">✓</div>
+      <h2>تم تأكيد طلبك بنجاح!</h2>
+      <p>شكراً لطلبك من <b>طازة 🌿</b>، جاري تجهيز المنتجات من المزرعة وهتكون عندك في أسرع وقت.</p>
+      <button type="button" class="btn btn-primary" onclick="navigateTo('screen-tracking')">متابعة حالة الطلب</button>
+      <button type="button" class="btn-text" onclick="navigateTo('screen-home')">العودة للرئيسية</button>
+    </section>
+
+    <!-- 8. متابعة الطلب -->
+    <section id="screen-tracking" class="screen">
+      <div class="screen-header">
+        <button type="button" class="back-btn" onclick="navigateTo('screen-home')">‹</button>
+        <h3>تفاصيل ومتابعة الطلب</h3>
+        <span></span>
+      </div>
+      <div class="tracking-container">
+        <div class="tracking-card">
+          <div class="track-id">طلب رقم <b id="trackingId">#73821</b></div>
+          <span class="badge badge-success">جاري التجهيز</span>
+        </div>
+        <div class="tracking-steps">
+          <div class="step done">
+            <div class="step-dot"></div>
+            <div class="step-text"><b>تم استلام الطلب</b><small>طلبك وصلنا بنجاح</small></div>
+          </div>
+          <div class="step active">
+            <div class="step-dot"></div>
+            <div class="step-text"><b>جاري تجهيز طلبك</b><small>بنفرزلك الخضار والفاكهة بعناية</small></div>
+          </div>
+          <div class="step">
+            <div class="step-dot"></div>
+            <div class="step-text"><b>خرج للتوصيل</b><small>مندوب طازة في الطريق إليك</small></div>
+          </div>
+          <div class="step">
+            <div class="step-dot"></div>
+            <div class="step-text"><b>تم التسليم</b><small>بالهنا والشفا 🌿</small></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. حسابي الشخصي -->
+    <section id="screen-account" class="screen">
+      <div class="screen-header">
+        <h3>حسابي الشخصي</h3>
+      </div>
+      <div class="profile-card">
+        <div class="avatar">👤</div>
+        <h4>أهلاً بيك في طازة 🌿</h4>
+        <small>عميل طازة المتميز</small>
+      </div>
+      <div class="menu-list">
+        <div class="menu-item" onclick="navigateTo('screen-tracking')">📦 متابعة طلباتي <span>‹</span></div>
+        <div class="menu-item" onclick="navigateTo('screen-favorites')">❤️ المفضلة <span>‹</span></div>
+        <div class="menu-item" onclick="alert('الدعم عبر واتساب جاهز في أي وقت!')">💬 خدمة العملاء والدعم <span>‹</span></div>
+        <div class="menu-item" onclick="navigateTo('screen-splash')">🚪 شاشة الترحيب <span>‹</span></div>
+      </div>
+    </section>
+
+    <!-- 10. المفضلة -->
+    <section id="screen-favorites" class="screen">
+      <div class="screen-header">
+        <button type="button" class="back-btn" onclick="navigateTo('screen-home')">‹</button>
+        <h3>المفضلة ❤️</h3>
+        <span></span>
+      </div>
+      <div class="products-grid" id="favProductsGrid"></div>
+    </section>
+
+    <!-- شريط التنقل السفلي -->
+    <nav class="bottom-nav" id="mainNavbar" style="display:none;">
+      <button type="button" class="nav-item active" onclick="navTab('screen-home', this)">
+        <span>🏠</span>الرئيسية
+      </button>
+      <button type="button" class="nav-item" onclick="navTab('screen-categories', this)">
+        <span>▦</span>الأقسام
+      </button>
+      <button type="button" class="nav-item cart-nav" onclick="navTab('screen-cart', this)">
+        <span>🛒</span>السلة
+        <b id="navCartCount" class="nav-badge">0</b>
+      </button>
+      <button type="button" class="nav-item" onclick="navTab('screen-tracking', this)">
+        <span>📦</span>الطلبات
+      </button>
+      <button type="button" class="nav-item" onclick="navTab('screen-account', this)">
+        <span>👤</span>حسابي
+      </button>
+    </nav>
+
+  </div>
+
+  <script>
+    const WHATSAPP_NUMBER = "201000000000";
+
+    const products = [
+      { id: 1, name: "طماطم بلدي", emoji: "🍅", price: 15, unit: "كيلو", category: "خضار", discount: "عرض خاص", desc: "طماطم طازجة حمراء ممتازة للسلطة والطبخ." },
+      { id: 2, name: "خيار بلدي", emoji: "🥒", price: 18, unit: "كيلو", category: "خضار", discount: null, desc: "خيار طازج ومقرمش من الصوب الزراعية." },
+      { id: 3, name: "بطاطس تحمير", emoji: "🥔", price: 20, unit: "كيلو", category: "خضار", discount: null, desc: "بطاطس ممتازة للتحمير شيبسي وصوابع مقرمشة." },
+      { id: 4, name: "بصل أحمر", emoji: "🧅", price: 16, unit: "كيلو", category: "خضار", discount: null, desc: "بصل بلدي أحمر عالي الجودة يدوم طويلاً." },
+      { id: 5, name: "مانجو عويس", emoji: "🥭", price: 55, unit: "كيلو", category: "فاكهة", discount: "خصم 20%", desc: "مانجو سكرية ممتازة منتقاة واحدة فواحدة." },
+      { id: 6, name: "فراولة طازجة", emoji: "🍓", price: 35, unit: "علبة", category: "فاكهة", discount: "خصم 15%", desc: "فراولة حمراء مغسولة ومعبأة بعناية." },
+      { id: 7, name: "موز بلدي", emoji: "🍌", price: 25, unit: "كيلو", category: "فاكهة", discount: null, desc: "موز مستوي طازج غني بالطاقة." },
+      { id: 8, name: "برتقال بلدي", emoji: "🍊", price: 20, unit: "كيلو", category: "فاكهة", discount: null, desc: "برتقال عصير طازج ومليء بفيتامين سي." }
+    ];
+
+    let cart = JSON.parse(localStorage.getItem("taza_cart")) || {};
+    let favorites = JSON.parse(localStorage.getItem("taza_favs")) || [];
+    let currentProductDetail = products[0];
+    let detailCount = 1;
+    let historyStack = ["screen-splash"];
+
+    function navigateTo(screenId) {
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      const target = document.getElementById(screenId);
+      if (target) {
+        target.classList.add("active");
+        target.scrollTop = 0;
+      }
+
+      const nav = document.getElementById("mainNavbar");
+      if (nav) {
+        if (screenId === "screen-splash" || screenId === "screen-success") {
+          nav.style.display = "none";
+        } else {
+          nav.style.display = "flex";
+        }
+      }
+
+      historyStack.push(screenId);
+    }
+
+    function goBack() {
+      if (historyStack.length > 1) {
+        historyStack.pop();
+        const prev = historyStack[historyStack.length - 1];
+        navigateTo(prev);
+      } else {
+        navigateTo("screen-home");
+      }
+    }
+
+    function navTab(screenId, btn) {
+      document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+      navigateTo(screenId);
+    }
+
+    function renderHomeProducts(list = products) {
+      const container = document.getElementById("homeProductsGrid");
+      if (!container) return;
+      container.innerHTML = list.map(p => `
+        <div class="prod-card" onclick="openDetails(${p.id})">
+          ${p.discount ? `<span class="badge-discount">${p.discount}</span>` : ""}
+          <div class="prod-thumb">${p.emoji}</div>
+          <h5>${p.name}</h5>
+          <small>طازة • ${p.unit}</small>
+          <div class="prod-footer">
+            <span class="price">${p.price} ج.م</span>
+            <button type="button" class="prod-add-btn" onclick="event.stopPropagation(); addToCart(${p.id})">+</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function filterHomeProducts() {
+      const q = document.getElementById("homeSearchInput").value.trim().toLowerCase();
+      const res = products.filter(p => p.name.includes(q) || p.category.includes(q));
+      renderHomeProducts(res);
+    }
+
+    function filterByCategory(cat) {
+      if (cat === "الكل") {
+        renderHomeProducts(products);
+      } else if (cat === "عروض") {
+        renderHomeProducts(products.filter(p => p.discount));
+      } else {
+        renderHomeProducts(products.filter(p => p.category === cat));
+      }
+    }
+
+    function renderCategoriesList() {
+      const container = document.getElementById("categoriesListContainer");
+      if (!container) return;
+      const cats = [
+        { title: "الخضروات الطازجة", tag: "خضار", icon: "🥦" },
+        { title: "الفواكه الموسمية", tag: "فاكهة", icon: "🍎" },
+        { title: "عروض وتخفيضات طازة", tag: "عروض", icon: "🏷️" }
+      ];
+
+      container.innerHTML = cats.map(c => `
+        <div class="cat-item-row" onclick="filterByCategory('${c.tag}'); navigateTo('screen-home')">
+          <div><b>${c.icon} ${c.title}</b><br><small>أصناف طازجة ومختارة بعناية</small></div>
+          <span>‹</span>
+        </div>
+      `).join("");
+    }
+
+    function openDetails(id) {
+      const p = products.find(x => x.id === id);
+      currentProductDetail = p;
+      detailCount = 1;
+      document.getElementById("detailsName").innerText = p.name;
+      document.getElementById("detailsPrice").innerText = p.price;
+      document.getElementById("detailsDesc").innerText = p.desc;
+      document.getElementById("detailsImg").innerText = p.emoji;
+      document.getElementById("detailsQty").innerText = detailCount;
+      navigateTo("screen-details");
+    }
+
+    function changeDetailsQty(delta) {
+      detailCount += delta;
+      if (detailCount < 1) detailCount = 1;
+      document.getElementById("detailsQty").innerText = detailCount;
+    }
+
+    function addDetailsToCart() {
+      cart[currentProductDetail.id] = (cart[currentProductDetail.id] || 0) + detailCount;
+      updateCartUI();
+      navigateTo("screen-cart");
+    }
+
+    function toggleDetailsFav() {
+      const id = currentProductDetail.id;
+      if (favorites.includes(id)) {
+        favorites = favorites.filter(x => x !== id);
+        alert("تمت الإزالة من المفضلة");
+      } else {
+        favorites.push(id);
+        alert("تمت الإضافة للمفضلة ❤️");
+      }
+      localStorage.setItem("taza_favs", JSON.stringify(favorites));
+      renderFavorites();
+    }
+
+    function addToCart(id) {
+      cart[id] = (cart[id] || 0) + 1;
+      updateCartUI();
+    }
+
+    function changeCartQty(id, delta) {
+      cart[id] = (cart[id] || 0) + delta;
+      if (cart[id] <= 0) delete cart[id];
+      updateCartUI();
+    }
+
+    function clearCart() {
+      cart = {};
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      localStorage.setItem("taza_cart", JSON.stringify(cart));
+      const entries = Object.entries(cart);
+      const totalCount = entries.reduce((s, [, q]) => s + q, 0);
+      const badge = document.getElementById("navCartCount");
+      if (badge) badge.innerText = totalCount;
+
+      const container = document.getElementById("cartItemsList");
+      if (!container) return;
+
+      if (entries.length === 0) {
+        container.innerHTML = `<p style="text-align:center;padding:40px;color:#999;">سلة طازة لسه فاضية 🧺</p>`;
+        document.getElementById("cartTotalPrice").innerText = "0 ج.م";
+        return;
+      }
+
+      let total = 0;
+      container.innerHTML = entries.map(([id, qty]) => {
+        const p = products.find(x => x.id === Number(id));
+        const sub = p.price * qty;
+        total += sub
+  
